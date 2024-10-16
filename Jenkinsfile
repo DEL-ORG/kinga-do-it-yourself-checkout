@@ -2,39 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('Scan Golang Code') {
+        stage('test') {
             agent {
                 docker {
-                    image 'golang:1.22.5'
-                    args '-u root:root' // Run the container as root
+                    image 'node:22.4'
+                    args '-u root'
                 }
             }
             steps {
                 sh '''
-                    cd do-it-yourself/src/catalog/
-                    go test
+                    cd checkout
+                    npm install
+                    npm test --passWithNoTests
                 '''
             }
-        }
-
-        stage('Test') {
-            steps {
-                sh '''
-                    ls
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline finished.'
-        }
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
