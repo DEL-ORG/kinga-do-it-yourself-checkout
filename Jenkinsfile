@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                // Check out the code from your SCM (e.g., Git)
+                checkout scm
+            }
+        }
+
         stage('test') {
             agent {
                 docker {
@@ -10,8 +17,11 @@ pipeline {
                 }
             }
             steps {
+                // Ensure we're in the correct directory
                 sh '''
-                    cd checkout
+                    if [ -d "checkout" ]; then
+                        cd checkout
+                    fi
                     npm install
                     npm test --passWithNoTests
                 '''
