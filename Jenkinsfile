@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Check out the code from your SCM (e.g., Git)
                 checkout scm
+                sh 'ls -l /home/automation/workspace/S7STUDENTS/s6kinga/kinga-do-it-yourself-checkout@2'
             }
         }
 
@@ -17,13 +17,17 @@ pipeline {
                 }
             }
             steps {
-                // Ensure we're in the correct directory
+                // Check if the directory exists in the container
+                sh 'ls -l /home/automation/workspace/S7STUDENTS/s6kinga/kinga-do-it-yourself-checkout@2'
+
                 sh '''
-                    if [ -d "checkout" ]; then
-                        cd checkout
+                    if [ -f "package.json" ]; then
+                        npm install
+                        npm test --passWithNoTests
+                    else
+                        echo "package.json not found"
+                        exit 1
                     fi
-                    npm install
-                    npm test --passWithNoTests
                 '''
             }
         }
